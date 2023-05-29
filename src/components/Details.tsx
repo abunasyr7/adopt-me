@@ -1,11 +1,11 @@
 import { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import AdoptedPetContext from "./AdoptedPetContext.js";
-import ErrorBoundary from "./ErrorBoundary.jsx";
-import Carousel from "./Carousel.jsx";
+import AdoptedPetContext from "./AdoptedPetContext";
+import ErrorBoundary from "./ErrorBoundary";
+import Carousel from "./Carousel";
 import fetchPet from "../fetch/fetchPet.js";
-import Modal from "./Modal.tsx";
+import Modal from "./Modal";
 import { PetAPIResponse } from "../api/APIResponsesTypes";
 
 const Details = () => {
@@ -17,9 +17,9 @@ const Details = () => {
 
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setAdoptedPet] = useContext(AdoptedPetContext);
-  const { isLoading, isError, data, error } = useQuery({
+  const { isLoading, data } = useQuery<PetAPIResponse>({
     queryKey: ["details", id],
     queryFn: fetchPet,
   });
@@ -32,16 +32,11 @@ const Details = () => {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="error-pane">
-        <h2>Oops, something went wrong:</h2>
-        <p>{error.message}</p>
-      </div>
-    );
-  }
+  const pet = data?.pets[0];
 
-  const pet = data.pets[0];
+  if (!pet) {
+    throw new Error("There is no pet");
+  }
 
   return (
     <div className="details">
@@ -76,10 +71,10 @@ const Details = () => {
   );
 };
 
-export default function DetailsErrorBoundary(props) {
+export default function DetailsErrorBoundary() {
   return (
     <ErrorBoundary>
-      <Details {...props} />
+      <Details />
     </ErrorBoundary>
   );
 }
