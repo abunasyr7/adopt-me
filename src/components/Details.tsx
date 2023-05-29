@@ -4,9 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import AdoptedPetContext from "./AdoptedPetContext";
 import ErrorBoundary from "./ErrorBoundary";
 import Carousel from "./Carousel";
-import fetchPet from "../fetch/fetchPet.js";
+import fetchPet from "../fetch/fetchPet";
 import Modal from "./Modal";
-import { PetAPIResponse } from "../api/APIResponsesTypes";
 
 const Details = () => {
   const { id } = useParams();
@@ -19,7 +18,7 @@ const Details = () => {
   const navigate = useNavigate();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setAdoptedPet] = useContext(AdoptedPetContext);
-  const { isLoading, data } = useQuery<PetAPIResponse>({
+  const { isLoading, data } = useQuery({
     queryKey: ["details", id],
     queryFn: fetchPet,
   });
