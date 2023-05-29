@@ -5,14 +5,20 @@ import AdoptedPetContext from "./AdoptedPetContext.js";
 import ErrorBoundary from "./ErrorBoundary.jsx";
 import Carousel from "./Carousel.jsx";
 import fetchPet from "../fetch/fetchPet.js";
-import Modal from "./Modal.jsx";
+import Modal from "./Modal.tsx";
+import { PetAPIResponse } from "../api/APIResponsesTypes";
 
 const Details = () => {
+  const { id } = useParams();
+
+  if (!id) {
+    throw new Error("I don't get an ID");
+  }
+
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   // eslint-disable-next-line no-unused-vars
   const [_, setAdoptedPet] = useContext(AdoptedPetContext);
-  const { id } = useParams();
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["details", id],
     queryFn: fetchPet,
