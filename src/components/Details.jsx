@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import ErrorBoundary from "./ErrorBoundary.jsx";
 import Carousel from "./Carousel.jsx";
-import fetchPet from "../fetch/fetchPet.js";
+import { useGetPetQuery } from "../redux-toolkit/service/petApiService";
 import Modal from "./Modal.jsx";
 import { useDispatch } from "react-redux";
 import { adopt } from "../redux-toolkit/slice/adoptedPetSlice";
@@ -13,10 +12,7 @@ const Details = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { isLoading, isError, data, error } = useQuery({
-    queryKey: ["details", id],
-    queryFn: fetchPet,
-  });
+  const { isLoading, data: pet } = useGetPetQuery(id);
 
   if (isLoading) {
     return (
@@ -25,17 +21,6 @@ const Details = () => {
       </div>
     );
   }
-
-  if (isError) {
-    return (
-      <div className="error-pane">
-        <h2>Oops, something went wrong:</h2>
-        <p>{error.message}</p>
-      </div>
-    );
-  }
-
-  const pet = data.pets[0];
 
   return (
     <div className="details">
